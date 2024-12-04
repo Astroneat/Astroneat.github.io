@@ -4,10 +4,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Counter</title>
     <script src="script.js"></script>
+    <link rel="stylesheet" href="stylesheet.css">
 </head>
-<body>
-    <p id="title">Let's see how far we can go</p>
-    <p id="count"></p>
-    <button onclick="countup()"></button>
+<body onload="update_count()">
+    <div class="container">
+        <div id="title">
+            <p>Let's see how far we can go</p>
+        </div>
+
+        <div id="count"></div>
+
+        <div id="btn">
+            <button onclick="countup()">Contribute!</button>
+        </div>
+    </div>
 </body>
 </html>

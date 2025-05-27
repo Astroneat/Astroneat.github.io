@@ -25,8 +25,4 @@ function update_count() {
 
 function countup() {
     fetch_counter("hit");
-
-    // let current_count = parseInt(document.getElementById("count").innerHTML);
-    // current_count += 1;
-    // document.getElementById("count").innerHTML = current_count;
 }

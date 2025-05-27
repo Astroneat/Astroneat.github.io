@@ -1,0 +1,58 @@
+:root {
+    --cell_size: 32px;
+}
+
+table {
+    border-collapse: collapse;
+    margin-top: 5px;
+}
+
+td {
+    border: 1px solid;
+    width: var(--cell_size);
+    height: var(--cell_size);
+    text-align: center;
+    background-color: gray;
+    cursor: default;
+    padding: 0px;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome and Opera */
+}
+
+.mine_cnt {
+    background-color: lightgray;
+}
+
+.flagged {
+    background-color: lightcoral;
+}
+
+.mine {
+    background-color: black;
+}
+
+nav ol {
+    height: 200px;
+    width: 18%;
+}
+nav ol {
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+#game {
+    width: fit-content;
+}
+
+#game_result {
+    margin: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+}

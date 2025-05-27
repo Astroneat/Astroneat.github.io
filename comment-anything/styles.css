@@ -1,0 +1,27 @@
+@font-face {
+    font-family: Monaspace Krypton;
+    font-weight: bold;
+    src: url('./fonts/MonaspaceKrypton-Bold.otf');
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.heading {
+    text-align: center;
+    font-family: Monaspace Krypton;
+    font-size: 50px;
+}
+
+.comment {
+    overflow: auto;
+    height: 80vh;
+    width: 50vw;
+}
+
+.comment * {
+    height: 100%;
+}

@@ -38,15 +38,6 @@ td {
     background-color: black;
 }
 
-nav ol {
-    height: 200px;
-    width: 18%;
-}
-nav ol {
-    overflow: hidden;
-    overflow-y: scroll;
-}
-
 #game {
     width: fit-content;
     margin: auto;

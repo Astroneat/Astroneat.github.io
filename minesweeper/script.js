@@ -285,5 +285,5 @@ function call_defeat() {
 }
 
 function show_hint() {
-    alert("uhhh not coded yet heh");
+    alert("i havent coded this part yet");
 }

@@ -7,43 +7,26 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body onload="start_game()">
-    <form>
-        <label for="rows">Rows:</label>
-        <input type="number" id="rows" name="rows" value="10" min="1" max="20">
-        <label for="cols">Columns:</label>
-        <input type="number" id="cols" name="cols" value="10" min="1" max="40">
-        <label for="mines">Mines:</label>
-        <input type="number" id="mines" name="mines" value="10" min="1" max="100">
-        <input type="button" value="Start" onclick="start_game()">
-    </form>
+    <div id="settings">
+        <label for="difficulty">Choose a difficulty: </label>
+        <select name="difficulty" id="difficulty">
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="expert">Expert</option>
+        </select>
+        <input type="button" id="btnStart" value="Start" onclick="start_game()">
+    </div>
+
     <div id="game">
+        <div id="infobar">
+            <div id="mine_counter">10</div>
+            <input type="button" id="btnHint" value="Hint" onclick="show_hint()">
+            <div id="timer">0:00</div>
+        </div>
+        <div style="clear: both;"></div>
         <table id="board" oncontextmenu="return false;"></table>
         <div id="game_result"></div>
     </div>
-    <!-- <nav>
-        <p>Move history</p>
-        <ol>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-        </ol>
-    </nav> -->
     <script type="text/javascript" src="script.js"></script>
 </body>
 </html>

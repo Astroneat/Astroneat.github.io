@@ -1,21 +1,8 @@
 :root {
-    --cell_size: 32px;
+    --cell_size: 38px;
 }
 
-table {
-    border-collapse: collapse;
-    margin-top: 5px;
-}
-
-td {
-    border: 1px solid;
-    width: var(--cell_size);
-    height: var(--cell_size);
-    text-align: center;
-    background-color: gray;
-    cursor: default;
-    padding: 0px;
-
+body {
     -webkit-touch-callout: none; /* iOS Safari */
       -webkit-user-select: none; /* Safari */
        -khtml-user-select: none; /* Konqueror HTML */
@@ -23,6 +10,20 @@ td {
           -ms-user-select: none; /* Internet Explorer/Edge */
               user-select: none; /* Non-prefixed version, currently
                                     supported by Chrome and Opera */
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    border: 0.5px solid;
+    width: var(--cell_size);
+    height: var(--cell_size);
+    text-align: center;
+    background-color: gray;
+    cursor: default;
+    padding: 0px;
 }
 
 .mine_cnt {
@@ -48,6 +49,7 @@ nav ol {
 
 #game {
     width: fit-content;
+    margin: auto;
 }
 
 #game_result {
@@ -55,4 +57,53 @@ nav ol {
     font-weight: bold;
     font-size: 20px;
     text-align: center;
+}
+
+#btnStart {
+    margin-top: 10px;
+}
+
+#btnHint {
+    border: 1px solid darkcyan;
+    background-color: aquamarine;
+    border-radius: 5px;
+    padding: 2px 8px;
+}
+
+#btnHint:hover {
+    background-color: mediumaquamarine;
+}
+
+#btnHint:active {
+    background-color: darkcyan;
+}
+
+#settings {
+    width: fit-content;
+    margin: auto;
+}
+
+#infobar {
+    position: relative;
+    height: 25px;
+    margin: 10px 0px;
+}
+
+#mine_counter, #btnHint, #timer {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#mine_counter {
+    left: 0;
+}
+
+#btnHint {
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#timer {
+    right: 0;
 }

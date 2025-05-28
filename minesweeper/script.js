@@ -1,18 +1,61 @@
 const game_result = document.getElementById("game_result");
+const mine_counter = document.getElementById("mine_counter");
+const timer = document.getElementById("timer");
+const difficulty = document.getElementById("difficulty");
 let cols, rows, mine_cnt;
+let start_time;
+let time_interval;
 
 const dx = [-1, -1, 0, 1, 1, 1, 0, -1];
 const dy = [0, 1, 1, 1, 0, -1, -1, -1];
 
 let cells = [];
 let game_end = false;
+let first_click = false;
+
+function counting_time() {
+    let now = new Date().getTime();
+    let distance = now - start_time;
+    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    if(seconds < 10) seconds = "0" + seconds;
+    timer.textContent = minutes + ":" + seconds;
+}
+
+function start_counting_time() {
+    start_time = new Date().getTime();
+    time_interval = setInterval(function() {
+        counting_time();
+        if(game_end)
+            clearInterval(time_interval);
+    })
+}
 
 function start_game() {
+    first_click = false;
     game_end = false;
     game_result.textContent = "";
-    rows = document.getElementById('rows').value;
-    cols = document.getElementById('cols').value;
-    mine_cnt = document.getElementById('mines').value;
+    timer.textContent = "0:00";
+    clearInterval(time_interval);
+
+    let diff = difficulty.value;
+    if(diff == "beginner") {
+        rows = 9;
+        cols = 9;
+        mine_cnt = 10;
+    }
+    else if(diff == "intermediate") {
+        rows = 16;
+        cols = 16;
+        mine_cnt = 40;
+    }
+    else if(diff == "expert") {
+        rows = 16;
+        cols = 30;
+        mine_cnt = 99;
+    }
+
+    mine_counter.textContent = mine_cnt;
     console.log(rows, cols, mine_cnt);
     init_cells(rows, cols, mine_cnt);
     // debug();
@@ -117,6 +160,11 @@ function init_board() {
 
 function handle_left_click(r, c) {
     if(game_end) return;
+    if(!first_click) {
+        start_counting_time();
+    }
+    first_click = true;
+
     if(!cells[r][c].is_opened) {
         open_cell(r, c);
     }
@@ -138,7 +186,7 @@ function set_cell_state(r, c, state) {
     cells[r][c] = state;
     cell_disp = document.getElementById(r.toString() + "_" + c.toString());
     cell_disp.className = get_cell_class(state);
-    if(cell_disp.className == 'mine_cnt')
+    if(cell_disp.className == 'mine_cnt' && state.mine_cnt > 0)
         cell_disp.textContent = state.mine_cnt;
 }
 
@@ -200,10 +248,18 @@ function flag_cell(r, c, toggle) {
     if(cells[r][c].is_opened) return;
     console.log("flagged cell: ", r, c);
 
-    if(toggle) 
+    const prev_state = cells[r][c].is_flagged;
+    if(toggle) {
         set_cell_state(r, c, make_cell(cells[r][c].is_opened, !cells[r][c].is_flagged, cells[r][c].is_mine, cells[r][c].mine_cnt));
-    else
+    }
+    else {
         set_cell_state(r, c, make_cell(cells[r][c].is_opened, true, cells[r][c].is_mine, cells[r][c].mine_cnt));
+    }
+    const cur_state = cells[r][c].is_flagged;
+    if(prev_state != cur_state) {
+        if(!cur_state) mine_counter.textContent -= -1;
+        else mine_counter.textContent -= 1;
+    }
 }
 
 function is_victory() {
@@ -226,4 +282,8 @@ function call_victory() {
 function call_defeat() {
     game_end = true;
     game_result.textContent = "You hit a mine :(";
+}
+
+function show_hint() {
+    alert("uhhh not coded yet heh");
 }

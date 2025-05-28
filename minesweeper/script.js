@@ -287,3 +287,4 @@ function call_defeat() {
 function show_hint() {
     alert("i havent coded this part yet");
 }
+    

@@ -12,8 +12,16 @@ body {
                                     supported by Chrome and Opera */
 }
 
+.container {
+    margin: auto;
+    overflow-x: auto;
+}
+
 table {
     border-collapse: collapse;
+    margin: auto;
+    width: 100%;
+    min-width: max-content;
 }
 
 td {

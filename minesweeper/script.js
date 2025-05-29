@@ -10,6 +10,7 @@ const dx = [-1, -1, 0, 1, 1, 1, 0, -1];
 const dy = [0, 1, 1, 1, 0, -1, -1, -1];
 
 let cells = [];
+let mine_pos = [];
 let game_end = false;
 let first_click = false;
 
@@ -74,7 +75,6 @@ function in_bounds(x, y) {
     return 0 <= x && x < rows && 0 <= y && y < cols;
 }
 
-
 function make_cell(is_opened, is_flagged, is_mine, mine_cnt) {
     let cell = {
         is_opened: is_opened,
@@ -95,28 +95,28 @@ function init_cells(rows, cols, mine_cnt) {
         }
         cells.push(row);
     }
-    console.log(cells);
-    
-    let pos = [];
-    for(let i = 0; i < rows * cols; ++ i) {
-        pos.push(i);
-    }
 
-    for(let i = pos.length - 1; i >= 0; -- i) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [pos[i], pos[j]] = [pos[j], pos[i]];
-    }
-
-    for(let i = 0; i < mine_cnt; ++ i) {
-        const x = parseInt(pos[i] / cols);
-        const y = pos[i] % cols;
-        console.log(pos[i], x, y);
-        cells[x][y].is_mine = true;
-        for(let d = 0; d < 8; ++ d) {
-            let neighbor_x = x + dx[d];
-            let neighbor_y = y + dy[d];
-            if(in_bounds(neighbor_x, neighbor_y)) {
-                cells[neighbor_x][neighbor_y].mine_cnt += 1;
+    mine_pos.length = 0;
+    for(let spawned_mine = 0; spawned_mine < mine_cnt; ) {
+        while(true) {
+            const x = Math.floor(Math.random() * rows);
+            const y = Math.floor(Math.random() * cols);
+            const pos = x + "_" + y;
+            if(!mine_pos.includes(pos)) {
+                mine_pos.push(pos);
+                cells[x][y].is_mine = true;
+                cells[x][y].mine_cnt = 0;
+                // cells[x][y].is_opened = true;
+                for(let d = 0; d < 8; ++ d) {
+                    const nei_x = x + dx[d];
+                    const nei_y = y + dy[d];
+                    if(in_bounds(nei_x, nei_y) && !cells[nei_x][nei_y].is_mine) {
+                        cells[nei_x][nei_y].mine_cnt += 1;
+                        console.log(nei_x, nei_y, cells[nei_x][nei_x].mine_cnt);
+                    }
+                } 
+                ++ spawned_mine;
+                break;
             }
         }
     }
@@ -148,7 +148,7 @@ function init_board() {
             
             cell.className = get_cell_class(cells[r][c]);
             if(cell.className == 'mine_cnt')
-                cell.textContent(cells[r][c].mine_cnt);
+                cell.textContent = cells[r][c].mine_cnt;
             cell.id = r.toString() + "_" + c.toString();
             cell.addEventListener("click", function() { handle_left_click(r, c); });
             cell.addEventListener("contextmenu", function() { handle_right_click(r, c); });
@@ -282,6 +282,14 @@ function call_victory() {
 function call_defeat() {
     game_end = true;
     game_result.textContent = "You hit a mine :(";
+
+    // reveal all mines
+    for(let i = 0; i < mine_pos.length; ++ i) {
+        // const x = mine_pos[i][0], y = mine_pos[i][1];
+        const pos = mine_pos[i].split("_");
+        const x = pos[0], y = pos[1];
+        set_cell_state(x, y, make_cell(true, false, true, 0));
+    }
 }
 
 function show_hint() {

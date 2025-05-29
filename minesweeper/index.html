@@ -7,25 +7,27 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body onload="start_game()">
-    <div id="settings">
-        <label for="difficulty">Choose a difficulty: </label>
-        <select name="difficulty" id="difficulty">
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="expert">Expert</option>
-        </select>
-        <input type="button" id="btnStart" value="Start" onclick="start_game()">
-    </div>
-
-    <div id="game">
-        <div id="infobar">
-            <div id="mine_counter">10</div>
-            <input type="button" id="btnHint" value="Hint" onclick="show_hint()">
-            <div id="timer">0:00</div>
+    <div class="container">
+        <div id="settings">
+            <label for="difficulty">Choose a difficulty: </label>
+            <select name="difficulty" id="difficulty">
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="expert">Expert</option>
+            </select>
+            <input type="button" id="btnStart" value="Start" onclick="start_game()">
         </div>
-        <div style="clear: both;"></div>
-        <table id="board" oncontextmenu="return false;"></table>
-        <div id="game_result"></div>
+
+        <div id="game">
+            <div id="infobar">
+                <div id="mine_counter">10</div>
+                <input type="button" id="btnHint" value="Hint" onclick="show_hint()">
+                <div id="timer">0:00</div>
+            </div>
+            <div style="clear: both;"></div>
+            <table id="board" oncontextmenu="return false;"></table>
+            <div id="game_result"></div>
+        </div>
     </div>
     <script type="text/javascript" src="script.js"></script>
 </body>

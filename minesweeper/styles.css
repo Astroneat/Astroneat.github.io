@@ -12,9 +12,9 @@ body {
                                     supported by Chrome and Opera */
 }
 
-.container {
-    margin: auto;
-    overflow-x: auto;
+#container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
 }
 
 table {
@@ -56,10 +56,6 @@ td {
     font-weight: bold;
     font-size: 20px;
     text-align: center;
-}
-
-#btnStart {
-    margin-top: 10px;
 }
 
 #btnHint {

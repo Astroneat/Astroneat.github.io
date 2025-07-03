@@ -59,16 +59,13 @@ function start_game() {
     mine_counter.textContent = mine_cnt;
     console.log(rows, cols, mine_cnt);
     init_cells(rows, cols, mine_cnt);
-    // debug();
     init_board();
+    // debug();
 }
 
 function debug() {
-    for(let i = 0; i < 9; ++ i) {
-        cells[0][i] = make_cell(true, false, false, i);
-    }
-    cells[1][0] = make_cell(false, true, false, 0);
-    cells[1][1] = make_cell(true, false, true, 0);
+    console.log(get_cell_class(make_cell(false, false, false, 100)));
+    set_cell_state(0, 0, make_cell(false, false, false, 100));
 }
 
 function in_bounds(x, y) {
@@ -147,8 +144,6 @@ function init_board() {
             let cell = document.createElement('td');
             
             cell.className = get_cell_class(cells[r][c]);
-            if(cell.className == 'mine_cnt')
-                cell.textContent = cells[r][c].mine_cnt;
             cell.id = r.toString() + "_" + c.toString();
             cell.addEventListener("click", function() { handle_left_click(r, c); });
             cell.addEventListener("contextmenu", function() { handle_right_click(r, c); });
@@ -186,7 +181,8 @@ function set_cell_state(r, c, state) {
     cells[r][c] = state;
     cell_disp = document.getElementById(r.toString() + "_" + c.toString());
     cell_disp.className = get_cell_class(state);
-    if(cell_disp.className == 'mine_cnt' && state.mine_cnt > 0)
+    if((cell_disp.className == 'mine_cnt' && state.mine_cnt > 0) ||
+       (cell_disp.className == 'opened'))
         cell_disp.textContent = state.mine_cnt;
 }
 

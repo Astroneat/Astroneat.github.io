@@ -1,0 +1,13 @@
+body {
+    background-color: cornflowerblue;
+}
+
+#lofi {
+    border-radius: 10px;
+}
+
+#lofi_div {
+    position: fixed;
+    bottom: 1vh;
+    right: 1vw;
+}

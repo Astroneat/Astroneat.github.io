@@ -5,6 +5,7 @@ const difficulty = document.getElementById("difficulty");
 let cols, rows, mine_cnt;
 let start_time;
 let time_interval;
+let leniency;
 
 const dx = [-1, -1, 0, 1, 1, 1, 0, -1];
 const dy = [0, 1, 1, 1, 0, -1, -1, -1];
@@ -181,8 +182,7 @@ function set_cell_state(r, c, state) {
     cells[r][c] = state;
     cell_disp = document.getElementById(r.toString() + "_" + c.toString());
     cell_disp.className = get_cell_class(state);
-    if((cell_disp.className == 'mine_cnt' && state.mine_cnt > 0) ||
-       (cell_disp.className == 'opened'))
+    if(cell_disp.className == 'mine_cnt' && state.mine_cnt > 0)
         cell_disp.textContent = state.mine_cnt;
 }
 

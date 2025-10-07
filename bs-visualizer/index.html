@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Binary Search Visualizer</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;display:flex;flex-direction:column;align-items:center;padding:20px;background:#f7f9fb}
+    h1{margin:6px 0 18px;color:#2b3a67}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+    input[type=number]{width:110px;padding:6px;border-radius:6px;border:1px solid #cbd5e1}
+    button{padding:8px 12px;border-radius:6px;border:0;background:#2b6cb0;color:white;cursor:pointer}
+    button.secondary{background:#4a5568}
+    button.danger{background:#c53030}
+    .info{margin-top:10px;color:#334155}
+    .array{display:flex;gap:8px;align-items:flex-end;margin-top:18px}
+    .item{width:48px;height:48px;border-radius:6px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-weight:600}
+    .index{font-size:11px;color:#475569;margin-top:6px;text-align:center}
+    .mid{background:gold}
+    .found{background:mediumseagreen;color:#05220f}
+    .active-range{box-shadow:0 0 0 3px rgba(66,153,225,0.12) inset}
+    .panel{margin-top:18px;width:100%;max-width:820px;background:white;padding:12px;border-radius:8px;box-shadow:0 6px 18px rgba(15,23,42,0.06)}
+    .status-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+    .log{margin-top:12px;max-height:140px;overflow:auto;padding:8px;border-radius:6px;background:#f1f5f9;border:1px solid #e2e8f0}
+    .small{font-size:13px;color:#475569}
+    .footer{margin-top:12px;font-size:13px;color:#64748b}
+  </style>
+</head>
+<body>
+  <h1>Binary Search Visualizer</h1>
+
+  <div class="controls">
+    <label class="small">Array (sorted):</label>
+    <input id="arrInput" type="text" value="2,5,8,10,14,18,21,25,30" style="width:320px"/>
+    <button id="loadBtn">Load</button>
+
+    <label class="small">Target:</label>
+    <input id="targetInput" type="number" placeholder="enter number" />
+    <button id="startBtn">Start</button>
+    <button id="nextBtn" class="secondary">Next Step</button>
+    <button id="autoBtn" class="secondary">Auto Play</button>
+    <button id="resetBtn" class="danger">Reset</button>
+  </div>
+
+  <div class="panel">
+    <div class="status-row">
+      <div class="small">Comparisons: <strong id="compCount">0</strong></div>
+      <div class="small">Low: <strong id="lowVal">-</strong></div>
+      <div class="small">Mid: <strong id="midVal">-</strong></div>
+      <div class="small">High: <strong id="highVal">-</strong></div>
+    </div>
+
+    <div id="arrayArea" class="array" aria-live="polite" style="margin-top:16px"></div>
+
+    <div class="log" id="logArea"></div>
+    <div class="footer">Tip: Highlighted <span style="background:gold;padding:2px 6px;border-radius:4px">mid</span> and <span style="background:mediumseagreen;padding:2px 6px;border-radius:4px">found</span>.</div>
+  </div>
+
+  <script>
+    // state
+    let arr = [];
+    let low = 0, high = -1, mid = -1;
+    let target = null;
+    let running = false;
+    let compCount = 0;
+    let autoTimer = null;
+
+    // elements
+    const arrInput = document.getElementById('arrInput');
+    const loadBtn = document.getElementById('loadBtn');
+    const targetInput = document.getElementById('targetInput');
+    const startBtn = document.getElementById('startBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const autoBtn = document.getElementById('autoBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const arrayArea = document.getElementById('arrayArea');
+    const logArea = document.getElementById('logArea');
+    const compCountEl = document.getElementById('compCount');
+    const lowValEl = document.getElementById('lowVal');
+    const midValEl = document.getElementById('midVal');
+    const highValEl = document.getElementById('highVal');
+
+    function parseArrayText(text){
+      return text.split(',').map(s=>s.trim()).filter(s=>s!=='').map(Number).filter(n=>!Number.isNaN(n)).sort((a,b)=>a-b);
+    }
+
+    function renderArray(){
+      arrayArea.innerHTML = '';
+      arr.forEach((v,i)=>{
+        const box = document.createElement('div');
+        box.className = 'item';
+        if(i>=low && i<=high) box.classList.add('active-range');
+        if(i===mid) box.classList.add('mid');
+        if(i===foundIndex) box.classList.add('found');
+        box.textContent = v;
+        box.title = `index: ${i}`;
+        arrayArea.appendChild(box);
+      });
+    //   arrayArea.appendChild("<br>");
+      // index row
+    //   const idxContainer = document.createElement('div');
+    //   idxContainer.style.display='flex'; idxContainer.style.gap='8px'; idxContainer.style.marginTop='8px';
+    //   arr.forEach((_,i)=>{
+    //     const el = document.createElement('div'); el.className='index'; el.style.width='48px'; el.textContent=i; idxContainer.appendChild(el);
+    //   });
+    //   if(arrayArea.querySelector('.index')) arrayArea.removeChild(arrayArea.querySelector('.index'));
+    //   arrayArea.appendChild(idxContainer);
+
+      // update status
+      compCountEl.textContent = compCount;
+      lowValEl.textContent = (low<=high)? low : '-';
+      midValEl.textContent = (mid>=0)? mid : '-';
+      highValEl.textContent = (low<=high)? high : '-';
+    }
+
+    let foundIndex = -1;
+
+    function log(msg){
+      const p = document.createElement('div'); p.textContent = msg; logArea.prepend(p);
+    }
+
+    function resetState(){
+      arr = parseArrayText(arrInput.value || '');
+      low = 0; high = arr.length - 1; mid = -1; compCount = 0; foundIndex = -1; target = null; running = false;
+      clearInterval(autoTimer); autoTimer = null; autoBtn.textContent='Auto Play';
+      renderArray(); logArea.innerHTML='';
+    }
+
+    function startSearch(){
+      const t = Number(targetInput.value);
+      if(!arr.length){ alert('Please load a valid array (comma separated numbers).'); return; }
+      if(Number.isNaN(t)){ alert('Please enter a numeric target.'); return; }
+      target = t;
+      low = 0; high = arr.length - 1; mid = -1; compCount = 0; foundIndex = -1; running = true; logArea.innerHTML='';
+      log(`Start searching for ${target} in array.`);
+      renderArray();
+    }
+
+    function oneStep(){
+      if(!running) return;
+      if(low>high){
+        log(`Target ${target} not found after ${compCount} comparisons.`);
+        running=false; renderArray(); return;
+      }
+      mid = Math.floor((low+high)/2);
+      compCount++;
+      log(`Compare arr[${mid}] = ${arr[mid]} with target ${target} (comparison #${compCount})`);
+      if(arr[mid]===target){
+        foundIndex = mid; log(`Found target ${target} at index ${mid} in ${compCount} comparisons.`); running=false; renderArray(); return;
+      } else if(arr[mid] < target){
+        log(`Value ${arr[mid]} < ${target} → search right half (low = ${mid+1})`);
+        low = mid + 1;
+      } else {
+        log(`Value ${arr[mid]} > ${target} → search left half (high = ${mid-1})`);
+        high = mid - 1;
+      }
+      renderArray();
+    }
+
+    // Button handlers
+    loadBtn.addEventListener('click', ()=>{ resetState(); log('Array loaded.'); });
+    startBtn.addEventListener('click', ()=>{ startSearch(); });
+    nextBtn.addEventListener('click', ()=>{ if(!running){ alert('Press Start first.'); return;} oneStep(); });
+    autoBtn.addEventListener('click', ()=>{
+      if(!running){ alert('Press Start first.'); return; }
+      if(autoTimer){ clearInterval(autoTimer); autoTimer=null; autoBtn.textContent='Auto Play'; }
+      else { autoBtn.textContent='Pause'; autoTimer=setInterval(()=>{ if(!running){ clearInterval(autoTimer); autoTimer=null; autoBtn.textContent='Auto Play'; return;} oneStep(); }, 900); }
+    });
+    resetBtn.addEventListener('click', ()=>{ resetState(); log('Reset to initial array.'); });
+
+    // init
+    resetState();
+  </script>
+</body>
+</html>
